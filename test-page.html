@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pokemon Scarlet &amp; Violet Booster Pack – Test Store</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; background: #f5f5f5; }
+    .product { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    h1 { font-size: 24px; color: #222; margin-bottom: 16px; }
+    .price-section { margin: 20px 0; }
+    .price { font-size: 32px; font-weight: bold; color: #b12704; }
+    .in-stock { color: #007600; font-size: 14px; margin-top: 8px; }
+    img { width: 200px; float: right; margin-left: 20px; background: #eee; height: 280px; display: flex; align-items: center; justify-content: center; border-radius: 4px; }
+    .description { margin-top: 20px; color: #555; line-height: 1.6; clear: right; }
+    .badge { display: inline-block; padding: 4px 8px; background: #ffe0b2; color: #e65100; border-radius: 4px; font-size: 12px; margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+  <div class="product">
+    <div class="badge">🃏 Trading Card Game</div>
+    <h1>Pokemon Scarlet &amp; Violet – Booster Pack (Paldea Evolved)</h1>
+
+    <!-- Price element with schema.org markup -->
+    <div class="price-section" itemscope itemtype="http://schema.org/Product">
+      <meta itemprop="name" content="Pokemon Scarlet &amp; Violet Booster Pack">
+      <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+        <div class="price">
+          <span itemprop="price" content="8.49">AU$8.49</span>
+        </div>
+        <meta itemprop="priceCurrency" content="AUD">
+        <meta itemprop="availability" content="https://schema.org/InStock">
+      </div>
+    </div>
+
+    <div class="in-stock">✓ In Stock – Ready to ship</div>
+
+    <div class="description">
+      <p>Each Pokemon Scarlet &amp; Violet Booster Pack contains 10 cards from the Paldea Evolved expansion, including at least 1 rare card.</p>
+      <p>Possible pulls include full-art Tera Pokemon ex, ultra rare, and illustration rare cards.</p>
+    </div>
+  </div>
+
+  <script>
+    // Log to help debug detection
+    console.log('Test page loaded. Title:', document.title);
+    console.log('H1:', document.querySelector('h1')?.textContent);
+  </script>
+</body>
+</html>
