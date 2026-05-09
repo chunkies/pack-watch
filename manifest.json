@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "PackWatch",
-  "version": "1.0.0",
-  "description": "Detects card pack purchases and finds cheaper prices automatically. Supports Pokemon, One Piece, MTG, Yu-Gi-Oh, and more.",
+  "version": "1.2.0",
+  "description": "Detects TCG packs, single cards, and graded slabs — shows market price and cheaper alternatives. Supports Pokemon, One Piece, MTG, Yu-Gi-Oh, and more.",
   "permissions": ["storage"],
   "host_permissions": ["<all_urls>"],
   "background": {
