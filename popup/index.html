@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PackWatch</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div id="app">
+    <header>
+      <div class="logo">🃏 PackWatch</div>
+      <div class="tagline">Card pack price tracker</div>
+    </header>
+
+    <div class="stats-grid">
+      <div class="stat">
+        <div class="stat-value" id="stat-tracked">—</div>
+        <div class="stat-label">Tracked</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="stat-spent">—</div>
+        <div class="stat-label">Spent</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="stat-stores">—</div>
+        <div class="stat-label">Stores</div>
+      </div>
+    </div>
+
+    <div class="section-bar">
+      <span>Purchase History</span>
+      <button id="clear-btn" class="clear-btn">Clear all</button>
+    </div>
+
+    <div id="history" class="history"></div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
