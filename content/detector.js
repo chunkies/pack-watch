@@ -54,6 +54,7 @@
       "tin"
     ];
     const CARD_INDICATORS = [
+      // Rarity / treatment
       "holo",
       "holofoil",
       "holographic",
@@ -66,17 +67,46 @@
       "rainbow rare",
       "hyper rare",
       "gold rare",
-      "near mint",
-      "lightly played",
-      "moderately played",
       "foil card",
       "etched foil",
       "borderless",
       "showcase",
       "alternate art",
+      // Condition
+      "near mint",
+      "lightly played",
+      "moderately played",
+      "heavily played",
+      "mint condition",
+      // Graded slabs
+      "psa 10",
+      "psa 9",
+      "psa 8",
+      "psa 7",
+      "bgs 10",
+      "bgs 9.5",
+      "bgs 9",
+      "bgs 8",
+      "cgc 10",
+      "cgc 9.5",
+      "cgc 9",
+      "pca 10",
+      "ace 10",
+      "graded card",
+      "graded pokemon",
+      "graded mtg",
+      "psa graded",
+      "bgs graded",
+      "cgc graded",
+      // Singles
       "single card",
-      "singles"
+      "singles",
+      // Lots
+      "card lot",
+      "lot of cards",
+      "bulk cards"
     ];
+    const GRADING_COMPANIES = ["psa", "bgs", "cgc", "pca", "ace grading", "beckett"];
     const CARD_URL_PATTERNS = [
       /tcgplayer\.com\/product\//,
       /cardmarket\.com\/.+\/Singles\//,
@@ -149,6 +179,12 @@
       if (/\b\d{1,3}\/\d{2,3}\b/.test(text)) {
         return { ...base, productType: "card", subType: "single card" };
       }
+      const gradingCo = GRADING_COMPANIES.find((g) => text.includes(g));
+      if (gradingCo) {
+        const gradeMatch = text.match(/\b(psa|bgs|cgc|pca|ace)\s*(10|9\.5|9|8\.5|8|7\.5|7)\b/i);
+        const subType = gradeMatch ? gradeMatch[0].toUpperCase() : `${gradingCo.toUpperCase()} graded`;
+        return { ...base, productType: "graded", subType };
+      }
       const cardIndicator = CARD_INDICATORS.find((t) => text.includes(t));
       if (cardIndicator) return { ...base, productType: "card", subType: cardIndicator };
       if (/ebay\.(com|com\.au)\/itm\//.test(url)) {
@@ -204,8 +240,9 @@
       font-size: 10px; font-weight: 600; letter-spacing: 0.4px; margin-bottom: 5px;
       text-transform: uppercase;
     }
-    .pw-type-pack { background: rgba(124,58,237,0.18); color: #a78bfa; }
-    .pw-type-card { background: rgba(245,158,11,0.18); color: #fbbf24; }
+    .pw-type-pack   { background: rgba(124,58,237,0.18); color: #a78bfa; }
+    .pw-type-card   { background: rgba(245,158,11,0.18); color: #fbbf24; }
+    .pw-type-graded { background: rgba(234,179,8,0.22);  color: #fde047; border: 1px solid rgba(234,179,8,0.3); }
     .pw-product-name {
       font-size: 13px; font-weight: 600; color: #e2e8f0;
       margin-bottom: 6px; line-height: 1.35;
@@ -303,10 +340,10 @@
     function buildHTML(product) {
       const priceText = product.currentPrice ? `AU$${product.currentPrice.toFixed(2)}` : "\u2014";
       const siteShort = product.site.replace(".com.au", "").replace(".com", "");
-      const isCard = product.productType === "card";
-      const typeLabel = isCard ? "Single Card" : "Sealed Pack";
-      const typeClass = isCard ? "pw-type-card" : "pw-type-pack";
-      const pillLabel = isCard ? `${titleCase(product.game)} card found` : `${titleCase(product.game)} pack found`;
+      const { productType } = product;
+      const typeLabel = productType === "graded" ? `Graded \xB7 ${product.subType}` : productType === "card" ? "Single Card" : "Sealed Pack";
+      const typeClass = productType === "graded" ? "pw-type-graded" : productType === "card" ? "pw-type-card" : "pw-type-pack";
+      const pillLabel = productType === "graded" ? `${titleCase(product.game)} graded slab` : productType === "card" ? `${titleCase(product.game)} card found` : `${titleCase(product.game)} pack found`;
       return `
       <div class="pw-pill" id="pw-pill">
         <span class="pw-pill-icon">\u{1F0CF}</span>
@@ -343,7 +380,7 @@
         </div>
 
         <div class="pw-actions">
-          <button class="pw-track" id="pw-track">+ Track this ${isCard ? "card" : "purchase"}</button>
+          <button class="pw-track" id="pw-track">+ Track this ${productType === "graded" ? "slab" : productType === "card" ? "card" : "purchase"}</button>
         </div>
       </div>
     `;

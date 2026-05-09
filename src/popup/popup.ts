@@ -42,7 +42,9 @@ function renderHistory(purchases: Purchase[]): void {
     const date  = new Date(p.date).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' });
     const price = p.price != null ? `AU$${p.price.toFixed(2)}` : 'No price';
     const store = (p.site ?? '').replace('.com.au', '').replace('.com', '');
-    const typeLabel = p.productType === 'card' ? '🃏 Card' : '📦 Pack';
+    const typeLabel = p.productType === 'graded' ? '🏆 Graded'
+      : p.productType === 'card' ? '🃏 Card'
+      : '📦 Pack';
 
     return `
       <div class="item">

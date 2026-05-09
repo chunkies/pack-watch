@@ -33,7 +33,8 @@ async function handleFetchPrices(query: string, productType: ProductType): Promi
   const result: PriceData = { ebay: null };
 
   try {
-    // For single cards, append "near mint" to get better price comparisons
+    // Cards: append "near mint" for condition-comparable results
+    // Graded: keep query as-is (grade is already in the product name)
     const ebayQuery = productType === 'card' ? `${query} near mint` : query;
     result.ebay = await fetchEbayAU(ebayQuery);
   } catch {

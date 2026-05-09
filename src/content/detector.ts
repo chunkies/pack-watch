@@ -41,16 +41,33 @@ import type { Product, PriceData } from '../types';
 
   // Card-type indicators — only checked when no pack keyword matches
   const CARD_INDICATORS = [
+    // Rarity / treatment
     'holo', 'holofoil', 'holographic',
     'full art', 'full-art',
     'secret rare', 'ultra rare', 'illustration rare', 'special illustration',
     'rainbow rare', 'hyper rare', 'gold rare',
-    'near mint', 'lightly played', 'moderately played',
     'foil card', 'etched foil', 'borderless', 'showcase', 'alternate art',
+    // Condition
+    'near mint', 'lightly played', 'moderately played', 'heavily played',
+    'mint condition',
+    // Graded slabs
+    'psa 10', 'psa 9', 'psa 8', 'psa 7',
+    'bgs 10', 'bgs 9.5', 'bgs 9', 'bgs 8',
+    'cgc 10', 'cgc 9.5', 'cgc 9',
+    'pca 10', 'ace 10',
+    'graded card', 'graded pokemon', 'graded mtg',
+    'psa graded', 'bgs graded', 'cgc graded',
+    // Singles
     'single card', 'singles',
+    // Lots
+    'card lot', 'lot of cards', 'bulk cards',
   ];
 
-  // Known single-card URL patterns
+  // Graded card grading companies — triggers card detection even without other indicators
+  const GRADING_COMPANIES = ['psa', 'bgs', 'cgc', 'pca', 'ace grading', 'beckett'];
+
+  // Known single-card marketplace URL patterns
+
   const CARD_URL_PATTERNS: RegExp[] = [
     /tcgplayer\.com\/product\//,
     /cardmarket\.com\/.+\/Singles\//,
@@ -143,6 +160,15 @@ import type { Product, PriceData } from '../types';
       return { ...base, productType: 'card', subType: 'single card' };
     }
 
+    // Graded slab: grading company keyword + game keyword
+    const gradingCo = GRADING_COMPANIES.find(g => text.includes(g));
+    if (gradingCo) {
+      // Extract grade if present (e.g. "PSA 10", "BGS 9.5")
+      const gradeMatch = text.match(/\b(psa|bgs|cgc|pca|ace)\s*(10|9\.5|9|8\.5|8|7\.5|7)\b/i);
+      const subType = gradeMatch ? gradeMatch[0].toUpperCase() : `${gradingCo.toUpperCase()} graded`;
+      return { ...base, productType: 'graded', subType };
+    }
+
     // Single card: text indicators
     const cardIndicator = CARD_INDICATORS.find(t => text.includes(t));
     if (cardIndicator) return { ...base, productType: 'card', subType: cardIndicator };
@@ -205,8 +231,9 @@ import type { Product, PriceData } from '../types';
       font-size: 10px; font-weight: 600; letter-spacing: 0.4px; margin-bottom: 5px;
       text-transform: uppercase;
     }
-    .pw-type-pack { background: rgba(124,58,237,0.18); color: #a78bfa; }
-    .pw-type-card { background: rgba(245,158,11,0.18); color: #fbbf24; }
+    .pw-type-pack   { background: rgba(124,58,237,0.18); color: #a78bfa; }
+    .pw-type-card   { background: rgba(245,158,11,0.18); color: #fbbf24; }
+    .pw-type-graded { background: rgba(234,179,8,0.22);  color: #fde047; border: 1px solid rgba(234,179,8,0.3); }
     .pw-product-name {
       font-size: 13px; font-weight: 600; color: #e2e8f0;
       margin-bottom: 6px; line-height: 1.35;
@@ -313,10 +340,16 @@ import type { Product, PriceData } from '../types';
   function buildHTML(product: Product): string {
     const priceText = product.currentPrice ? `AU$${product.currentPrice.toFixed(2)}` : '—';
     const siteShort = product.site.replace('.com.au', '').replace('.com', '');
-    const isCard = product.productType === 'card';
-    const typeLabel = isCard ? 'Single Card' : 'Sealed Pack';
-    const typeClass = isCard ? 'pw-type-card' : 'pw-type-pack';
-    const pillLabel = isCard
+    const { productType } = product;
+    const typeLabel = productType === 'graded' ? `Graded · ${product.subType}`
+      : productType === 'card' ? 'Single Card'
+      : 'Sealed Pack';
+    const typeClass = productType === 'graded' ? 'pw-type-graded'
+      : productType === 'card' ? 'pw-type-card'
+      : 'pw-type-pack';
+    const pillLabel = productType === 'graded'
+      ? `${titleCase(product.game)} graded slab`
+      : productType === 'card'
       ? `${titleCase(product.game)} card found`
       : `${titleCase(product.game)} pack found`;
 
@@ -356,7 +389,7 @@ import type { Product, PriceData } from '../types';
         </div>
 
         <div class="pw-actions">
-          <button class="pw-track" id="pw-track">+ Track this ${isCard ? 'card' : 'purchase'}</button>
+          <button class="pw-track" id="pw-track">+ Track this ${productType === 'graded' ? 'slab' : productType === 'card' ? 'card' : 'purchase'}</button>
         </div>
       </div>
     `;

@@ -1,4 +1,4 @@
-export type ProductType = 'pack' | 'card';
+export type ProductType = 'pack' | 'card' | 'graded';
 
 export interface Product {
   productName: string;
